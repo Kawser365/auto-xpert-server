@@ -55,8 +55,9 @@ client.connect(err => {
 
     app.delete('/deleteService/:id',(req,res)=>{
         const id = ObjectId(req.params.id);
-        servicesCollection.findOneAndDelete({_id: id})
-        .then(document=> res.send(document.value))
+        const result = servicesCollection.findOneAndDelete({_id: id})
+        res.send(result);
+        // .then(document=> res.send(document.value))
 
     })
     app.post('/postReviews',(req,res)=>{
