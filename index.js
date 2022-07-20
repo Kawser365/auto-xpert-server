@@ -31,6 +31,27 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
 
+
+
+async function verifyToken(req, res, next) {
+    if (req.headers?.authorization?.startsWith('Bearer ')) {
+        const token = req.headers.authorization.split(' ')[1];
+
+        try {
+            const decodedUser = await admin.auth().verifyIdToken(token);
+            req.decodedEmail = decodedUser.email;
+        }
+        catch {
+
+        }
+
+    }
+    next();
+}
+
+
+
+
 async function run() {
 
 try{
@@ -153,7 +174,7 @@ try{
         res.json({ admin: isAdmin });
       })
       
-      app.put('/users/admin', async (req, res) => {
+      app.put('/users/admin', verifyToken, async (req, res) => {
         const user = req.body;
         const requester = req.decodedEmail;
         if (requester) {
